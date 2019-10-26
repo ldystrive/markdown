@@ -89,7 +89,6 @@ export default {
     onBlur (cm) {
       console.log('blur event')
     }
-
   },
   computed: {
     codemirror () {
@@ -110,9 +109,8 @@ export default {
       var cm = this.codemirror
       cm.setValue(data.str)
       console.log('data', this.value)
-      console.log(ot)
       var editorAdapter = new ot.CodeMirrorAdapter(cm)
-      var serverAdapter = new ot.SocketIOAdapter(this.$socket)
+      var serverAdapter = new ot.SocketIOAdapter(this.sockets, this.$socket)
 
       var client = new ot.EditerClient(data.revision, data.clients, serverAdapter, editorAdapter)
       console.log('client', client)
