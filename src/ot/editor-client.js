@@ -150,7 +150,6 @@ class OtherClient {
 class EditorClient extends Client {
   constructor (revision, clients, serverAdapter, editorAdapter) {
     super(revision)
-    // Client.call(this, revision)
     this.serverAdapter = serverAdapter
     this.editorAdapter = editorAdapter
     this.undoManager = new UndoManager()
@@ -173,8 +172,12 @@ class EditorClient extends Client {
     this.serverAdapter.registerCallbacks({
       client_left: function (clientId) { self.onClientLeft(clientId) },
       set_name: function (clientId, name) { self.getClientObject(clientId).setName(name) },
-      ack: function () { self.serverAck() },
+      ack: function () {
+        console.log('this.serverAdapter.registerCallbacks ack')
+        self.serverAck()
+      },
       operation: function (operation) {
+        console.log('serverAdapter -> operation', operation)
         self.applyServer(TextOperation.fromJSON(operation))
       },
       selection: function (clientId, selection) {
@@ -314,6 +317,7 @@ class EditorClient extends Client {
   }
 
   sendOperation (revision, operation) {
+    console.log('EditorClient.sendOperation', revision, operation)
     this.serverAdapter.sendOperation(revision, operation.toJSON(), this.selection)
   }
 

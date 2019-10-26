@@ -6,6 +6,7 @@ class Synchronized {
   applyClient (client, operation) {
     // When the user makes an edit, send the operation to the server and
     // switch to the 'AwaitingConfirm' state
+    console.info('Synchronized.applyClient', client.revision, operation)
     client.sendOperation(client.revision, operation)
     return new AwaitingConfirm(operation)
   }
@@ -111,6 +112,7 @@ class AwaitingConfirm {
   }
 
   serverAck (client) {
+    console.log('AwaitingConfirm.serverAck', client)
     // The client's operation has been acknowledged
     // => switch to synchronized state
     return synchronized_
@@ -147,6 +149,7 @@ class Client {
 
   // Call this method when the user changes the document.
   applyClient (operation) {
+    console.info('Client.applyClient', operation)
     this.setState(this.state.applyClient(this, operation))
   }
 
