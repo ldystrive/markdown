@@ -112,7 +112,6 @@ class AwaitingConfirm {
   }
 
   serverAck (client) {
-    console.log('AwaitingConfirm.serverAck', client)
     // The client's operation has been acknowledged
     // => switch to synchronized state
     return synchronized_
@@ -149,7 +148,6 @@ class Client {
 
   // Call this method when the user changes the document.
   applyClient (operation) {
-    console.info('Client.applyClient', operation)
     this.setState(this.state.applyClient(this, operation))
   }
 

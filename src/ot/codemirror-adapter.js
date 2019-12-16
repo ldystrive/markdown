@@ -156,7 +156,6 @@ class CodeMirrorAdapter {
 
       docEndLength += sumLengths(change.removed) - sumLengths(change.text)
     }
-
     return [operation, inverse]
   }
 
@@ -204,6 +203,7 @@ class CodeMirrorAdapter {
       this.trigger('change', pair[0], pair[1])
     }
     if (this.selectionChanged) { this.trigger('selectionChange') }
+
     this.changeInProgress = false
     this.ignoreNextChange = false
   }

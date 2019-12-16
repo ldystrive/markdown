@@ -13,7 +13,7 @@ class SocketIOAdapter {
     socket.subscribe('set_name', function ([clientId, name]) {
       self.trigger('set_name', clientId, name)
     })
-    socket.subscribe('ack', function () { self.trigger('ack') })
+    socket.subscribe('ack', function () { console.log('ack'); self.trigger('ack') })
     socket.subscribe('operation', function ([clientId, operation, selection]) {
       console.log('SocketIOAdapter subscribe operation', clientId, operation, selection)
       self.trigger('operation', operation)
