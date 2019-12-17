@@ -44,14 +44,9 @@ class Range {
   }
 }
 
-// A selection is basically an array of ranges. Every range represents a real
-// selection or a cursor in the document (when the start position equals the
-// end position of the range). The array must not be empty.
 class Selection {
   static Range = Range
 
-  // Convenience method for creating selections only containing a single cursor
-  // and no real selection range.
   static createCursor (position) {
     return new Selection([new Range(position, position)])
   }
@@ -85,12 +80,10 @@ class Selection {
     return false
   }
 
-  // Return the more current selection information.
   compose (other) {
     return other
   }
 
-  // Update the selection with respect to an operation.
   transform (other) {
     for (var i = 0, newRanges = []; i < this.ranges.length; i++) {
       newRanges[i] = this.ranges[i].transform(other)

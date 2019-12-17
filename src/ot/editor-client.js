@@ -1,7 +1,4 @@
-/* eslint-disable no-unused-vars */
 import TextOperation from './text-operation'
-import WrappedOperation from './wrapped-operation'
-import UndoManager from './undo-manager'
 import Client from './client'
 import Selection from './selection'
 
@@ -36,55 +33,10 @@ function hueFromName (name) {
   return a / 360
 }
 
-function last (arr) { return arr[arr.length - 1] }
-
 // Remove an element from the DOM.
 function removeElement (el) {
   if (el.parentNode) {
     el.parentNode.removeChild(el)
-  }
-}
-
-class SelfMeta {
-  constructor (selectionBefore, selectionAfter) {
-    this.selectionBefore = selectionBefore
-    this.selectionAfter = selectionAfter
-  }
-
-  invert () {
-    return new SelfMeta(this.selectionAfter, this.selectionBefore)
-  }
-
-  compose (other) {
-    return new SelfMeta(this.selectionBefore, other.selectionAfter)
-  }
-
-  transform (operation) {
-    return new SelfMeta(
-      this.selectionBefore.transform(operation),
-      this.selectionAfter.transform(operation)
-    )
-  }
-}
-
-class OtherMeta {
-  static fromJSON = function (obj) {
-    return new OtherMeta(
-      obj.clientId,
-      obj.selection && Selection.fromJSON(obj.selection)
-    )
-  }
-
-  constructor (clientId, selection) {
-    this.clientId = clientId
-    this.selection = selection
-  }
-
-  transform (operation) {
-    return new OtherMeta(
-      this.clientId,
-      this.selection && this.selection.transform(operation)
-    )
   }
 }
 
@@ -152,7 +104,6 @@ class EditorClient extends Client {
     super(revision)
     this.serverAdapter = serverAdapter
     this.editorAdapter = editorAdapter
-    this.undoManager = new UndoManager()
 
     this.initializeClientList()
     this.initializeClients(clients)
@@ -166,8 +117,6 @@ class EditorClient extends Client {
       selectionChange: function () { self.onSelectionChange() },
       blur: function () { self.onBlur() }
     })
-    this.editorAdapter.registerUndo(function () { self.undo() })
-    this.editorAdapter.registerRedo(function () { self.redo() })
 
     this.serverAdapter.registerCallbacks({
       client_left: function (clientId) { self.onClientLeft(clientId) },
@@ -262,36 +211,8 @@ class EditorClient extends Client {
     this.clientListEl = document.createElement('ul')
   }
 
-  applyUnredo (operation) {
-    this.undoManager.add(operation.invert(this.editorAdapter.getValue()))
-    this.editorAdapter.applyOperation(operation.wrapped)
-    this.selection = operation.meta.selectionAfter
-    this.editorAdapter.setSelection(this.selection)
-    this.applyClient(operation.wrapped)
-  }
-
-  undo () {
-    var self = this
-    if (!this.undoManager.canUndo()) { return }
-    this.undoManager.performUndo(function (o) { self.applyUnredo(o) })
-  }
-
-  redo () {
-    var self = this
-    if (!this.undoManager.canRedo()) { return }
-    this.undoManager.performRedo(function (o) { self.applyUnredo(o) })
-  }
-
   onChange (textOperation, inverse) {
-    var selectionBefore = this.selection
     this.updateSelection()
-    var meta = new SelfMeta(selectionBefore, this.selection)
-    var operation = new WrappedOperation(textOperation, meta)
-
-    var compose = this.undoManager.undoStack.length > 0 &&
-      inverse.shouldBeComposedWithInverted(last(this.undoManager.undoStack).wrapped)
-    var inverseMeta = new SelfMeta(this.selection, selectionBefore)
-    this.undoManager.add(new WrappedOperation(inverse, inverseMeta), compose)
     this.applyClient(textOperation)
   }
 
@@ -324,7 +245,6 @@ class EditorClient extends Client {
   applyOperation (operation) {
     this.editorAdapter.applyOperation(operation)
     this.updateSelection()
-    this.undoManager.transform(new WrappedOperation(operation, null))
   }
 }
 

@@ -65,5 +65,3 @@ class WrappedOperation {
 }
 
 export default WrappedOperation
-
-// TODO: WrappedOperation transform

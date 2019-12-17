@@ -1,17 +1,6 @@
 import TextOperation from './text-operation'
 import Selection from './selection'
 
-// Throws an error if the first argument is falsy. Useful for debugging.
-// eslint-disable-next-line no-unused-vars
-function assert (b, msg) {
-  if (!b) {
-    throw new Error(msg || 'assertion error')
-  }
-}
-
-// Bind a method to an object, so it doesn't matter whether you call
-// object.method() directly or pass object.method as a reference to another
-// function.
 function bind (obj, method) {
   var fn = obj[method]
   obj[method] = function () {
@@ -80,22 +69,7 @@ class CodeMirrorAdapter {
     this.cm.off('blur', this.onBlur)
   }
 
-  // Converts a CodeMirror change array (as obtained from the 'changes' event
-  // in CodeMirror v4) or single change or linked list of changes (as returned
-  // by the 'change' event in CodeMirror prior to version 4) into a
-  // TextOperation and its inverse and returns them as a two-element array.
   static operationFromCodeMirrorChanges = function (changes, doc) {
-    // Approach: Replay the changes, beginning with the most recent one, and
-    // construct the operation and its inverse. We have to convert the position
-    // in the pre-change coordinate system to an index. We have a method to
-    // convert a position in the coordinate system after all changes to an index,
-    // namely CodeMirror's `indexFromPos` method. We can use the information of
-    // a single change object to convert a post-change coordinate system to a
-    // pre-change coordinate system. We can now proceed inductively to get a
-    // pre-change coordinate system for all changes in the linked list.
-    // A disadvantage of this approach is its complexity `O(n^2)` in the length
-    // of the linked list of changes.
-
     var docEndLength = codemirrorDocLength(doc)
     var operation = new TextOperation().retain(docEndLength)
     var inverse = new TextOperation().retain(docEndLength)
@@ -189,12 +163,6 @@ class CodeMirrorAdapter {
   }
 
   onChange () {
-    // By default, CodeMirror's event order is the following:
-    // 1. 'change', 2. 'cursorActivity', 3. 'changes'.
-    // We want to fire the 'selectionChange' event after the 'change' event,
-    // but need the information from the 'changes' event. Therefore, we detect
-    // when a change is in progress by listening to the change event, setting
-    // a flag that makes this adapter defer all 'cursorActivity' events.
     this.changeInProgress = true
   }
 
@@ -321,14 +289,6 @@ class CodeMirrorAdapter {
   applyOperation (operation) {
     this.ignoreNextChange = true
     CodeMirrorAdapter.applyOperationToCodeMirror(operation, this.cm)
-  }
-
-  registerUndo (undoFn) {
-    this.cm.undo = undoFn
-  }
-
-  registerRedo (redoFn) {
-    this.cm.redo = redoFn
   }
 }
 
