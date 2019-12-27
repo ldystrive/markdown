@@ -7,22 +7,22 @@ class SocketIOAdapter {
     console.log($socket)
 
     var self = this
-    socket.subscribe('client_left', function (clientId) {
+    socket.on('client_left', function (clientId) {
       self.trigger('client_left', clientId)
     })
-    socket.subscribe('set_name', function ([clientId, name]) {
+    socket.on('set_name', function ([clientId, name]) {
       self.trigger('set_name', clientId, name)
     })
-    socket.subscribe('ack', function () { console.log('ack'); self.trigger('ack') })
-    socket.subscribe('operation', function ([clientId, operation, selection]) {
+    socket.on('ack', function () { console.log('ack'); self.trigger('ack') })
+    socket.on('operation', function ([clientId, operation, selection]) {
       console.log('SocketIOAdapter subscribe operation', clientId, operation, selection)
       self.trigger('operation', operation)
       self.trigger('selection', clientId, selection)
     })
-    socket.subscribe('selection', function ([clientId, selection]) {
+    socket.on('selection', function ([clientId, selection]) {
       self.trigger('selection', clientId, selection)
     })
-    socket.subscribe('reconnect', function () {
+    socket.on('reconnect', function () {
       self.trigger('reconnect')
     })
   }
