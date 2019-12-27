@@ -9,10 +9,10 @@ import VueSocketio from 'vue-socket.io'
 
 Vue.use(VueCodemirror)
 Vue.use(VueMarkdown)
-Vue.use(new VueSocketio({
-  debug: true,
-  connection: 'http://localhost:3000'
-}))
+// Vue.use(new VueSocketio({
+//   debug: true,
+//   connection: 'http://localhost:3000'
+// }))
 
 Vue.config.productionTip = false
 
