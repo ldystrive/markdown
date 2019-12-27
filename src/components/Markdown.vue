@@ -107,7 +107,7 @@ export default {
     //   query: { docId: this.$route.params.id }
     // })
 
-    this.sockets = io.connect('192.168.31.128:3000', {
+    this.sockets = io.connect('localhost:3000', {
       query: { docId: this.$route.params.id }
     })
     // console.log('socker', this.$socket, this.sockets)
