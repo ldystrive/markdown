@@ -9,7 +9,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Folder
   },
   {
     path: '/about',
@@ -23,6 +23,10 @@ const routes = [
     path: '/Folder',
     name: 'folder',
     component: Folder
+  },
+  {
+    path: '/file/:id',
+    component: Home
   }
 ]
 

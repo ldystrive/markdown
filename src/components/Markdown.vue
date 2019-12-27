@@ -34,6 +34,8 @@ import 'codemirror/theme/base16-dark.css'
 import marked from 'marked'
 import ot from '../ot'
 // import ot from '../ot'
+import io from 'socket.io-client'
+// import VueSocketio from 'vue-socket.io'
 
 console.log('233333', ot)
 // import '../ot/codemirror-adapter'
@@ -101,16 +103,38 @@ export default {
       sanitize: false
     })
 
-    console.log('socker', this.$socket, this.sockets)
+    this.sockets = io.connect('192.168.31.151:3000', {
+      query: { docId: this.$route.params.id }
+    })
+
+    // this.sockets = new VueSocketio({
+    //   debug: true,
+    //   connection: 'http://192.168.31.151:3000',
+    //   options: { query: { docId: this.$route.params.id } }
+    // })
+
+    // console.log('socker', this.$socket, this.sockets)
 
     // console.log(ot)
-    this.sockets.subscribe('doc', (data) => {
+    // this.sockets.subscribe('doc', (data) => {
+    //   console.log('socket on doc', data)
+    //   var cm = this.codemirror
+    //   cm.setValue(data.str)
+    //   console.log('data', this.value)
+    //   var editorAdapter = new ot.CodeMirrorAdapter(cm)
+    //   var serverAdapter = new ot.SocketIOAdapter(this.sockets, this.$socket)
+
+    //   var client = new ot.EditerClient(data.revision, data.clients, serverAdapter, editorAdapter)
+    //   console.log('client', client)
+    // })
+
+    this.sockets.on('doc', (data) => {
       console.log('socket on doc', data)
       var cm = this.codemirror
       cm.setValue(data.str)
       console.log('data', this.value)
       var editorAdapter = new ot.CodeMirrorAdapter(cm)
-      var serverAdapter = new ot.SocketIOAdapter(this.sockets, this.$socket)
+      var serverAdapter = new ot.SocketIOAdapter(this.sockets, this.sockets)
 
       var client = new ot.EditerClient(data.revision, data.clients, serverAdapter, editorAdapter)
       console.log('client', client)

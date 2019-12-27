@@ -17,7 +17,7 @@
 
 <script>
 import axios from 'axios'
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 export default {
   data () {
     return {
@@ -27,14 +27,15 @@ export default {
         { msg: 3 }
       ],
       info: null,
-      nfile: null,
-      path: 'http://localhost:3000'
+      nfile: null
+      // path: 'http://localhost:3000'
     }
   },
   methods: {
     getfiles: function () {
       axios
-        .get('http://localhost:3000/api/files/getFiles')
+        // .get('http://localhost:3000/api/files/getFiles')
+        .get('/api/files/getFiles')
         .then(response => (this.info = response.data.files))
     },
     addfile: function () {
@@ -45,7 +46,8 @@ export default {
         alert('No file name')
       } else {
         axios
-          .put('http://localhost:3000/api/files/addFile', { fileName: this.nfile })
+          // .put('http://localhost:3000/api/files/addFile', { fileName: this.nfile })
+          .put('/api/files/addFile', { fileName: this.nfile })
           .then(response => this.getfiles())
       }
     },
@@ -55,13 +57,13 @@ export default {
       // var io = require()
       // alert('how to do it?')
       // var token = sessionStorage.token
-      this.$socket = this.socket = io.connect('localhost:3000', {
-        query: { docId: file.docId }
-      })
+      // this.$socket = this.socket = io.connect('192.168.31.151:3000', {
+      //   query: { docId: file.docId }
+      // })
       // var socket = io.connect('localhost:3000', {
       //   query: { token: token, docId: file.docId }
       // })
-      this.$router.push({ path: '/' })
+      this.$router.push({ path: `/file/${file.docId}` })
     }
   },
   mounted () {
