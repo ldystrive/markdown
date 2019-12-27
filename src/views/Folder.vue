@@ -1,16 +1,10 @@
 <template>
   <div class="folder">
-    <input type="text"
-           v-model="nfile"
-           value=""/>
-    <input type="button"
-           value="Add File"
-           @click="addfile"/>
-    <input type="button"
-           value="Get Files"
-           @click="getfiles"/>
+    <el-input v-model="nfile" placeholder=""></el-input>
+    <el-button type="primary" @click="addfile">Add File</el-button>
+    <el-button type="primary" @click="getfiles">Get Files</el-button>
     <li v-for="file in info" :key="file">
-      <button v-on:click="intoFile(file)">{{ file.fileName }}</button>
+      <el-button type="success" @click="intoFile(file)">{{ file.fileName }}</el-button>
     </li>
   </div>
 </template>

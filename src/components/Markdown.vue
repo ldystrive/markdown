@@ -103,16 +103,13 @@ export default {
       sanitize: false
     })
 
-    this.sockets = io.connect('192.168.31.151:3000', {
-      query: { docId: this.$route.params.id }
-    })
-
-    // this.sockets = new VueSocketio({
-    //   debug: true,
-    //   connection: 'http://192.168.31.151:3000',
-    //   options: { query: { docId: this.$route.params.id } }
+    // this.sockets = io.connect('192.168.31.151:3000', {
+    //   query: { docId: this.$route.params.id }
     // })
 
+    this.sockets = io.connect('192.168.31.128:3000', {
+      query: { docId: this.$route.params.id }
+    })
     // console.log('socker', this.$socket, this.sockets)
 
     // console.log(ot)
